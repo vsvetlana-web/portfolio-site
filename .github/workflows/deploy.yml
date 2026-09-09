@@ -1,0 +1,19 @@
+name: Deploy to Beget
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pull on server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.BEGET_HOST }}
+          username: ${{ secrets.BEGET_USER }}
+          key: ${{ secrets.BEGET_SSH_KEY }}
+          port: ${{ secrets.BEGET_PORT }}
+          script: |
+            cd vsvetlwy.beget.tech/public_html && git pull
