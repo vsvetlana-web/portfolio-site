@@ -89,10 +89,12 @@
         position: sticky;
         top: 0;
         z-index: 50;
-        /* background: rgba(10, 11, 13, 0.72); */
-        /* backdrop-filter: blur(14px);
-        -webkit-backdrop-filter: blur(14px); */
-        /* border-bottom: 1px solid var(--line); */
+        background: linear-gradient(
+          180deg,
+          rgba(10, 11, 13, 0.95) 0%,
+          rgba(10, 11, 13, 0.55) 70%,
+          rgba(10, 11, 13, 0) 100%
+        );
       }
       .nav-inner {
         display: flex;
@@ -461,16 +463,25 @@
         grid-template-columns: repeat(3, 1fr);
         gap: 24px;
       }
+      .vcard {
+        display: block;
+      }
       .vcard .thumb {
         aspect-ratio: 16/10;
         border-radius: 14px;
         margin-bottom: 14px;
         display: block;
+        transition: transform 0.25s ease;
       }
-      .vcard .thumb .play {
+      .vcard:hover .thumb {
+        transform: scale(1.03);
+      }
+      .vcard .thumb iframe {
         position: absolute;
-        left: 12px;
-        bottom: 12px;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
       }
       .vcard h3 {
         font-size: 15px;
@@ -480,32 +491,6 @@
         margin-top: 7px;
         font-size: 13px;
         color: var(--faint);
-      }
-      .thumb-car {
-        background-image:
-          radial-gradient(
-            55% 45% at 82% 62%,
-            rgba(214, 44, 44, 0.42),
-            transparent 62%
-          ),
-          linear-gradient(205deg, #1b1d21, #0b0c0e);
-      }
-      .thumb-city {
-        background-image: linear-gradient(
-          180deg,
-          rgba(240, 168, 108, 0.42),
-          rgba(58, 70, 112, 0.28) 52%,
-          #0b0c0e
-        );
-      }
-      .thumb-watch {
-        background-image:
-          radial-gradient(
-            48% 48% at 50% 44%,
-            rgba(186, 164, 124, 0.32),
-            transparent 62%
-          ),
-          linear-gradient(180deg, #17181c, #0b0c0e);
       }
 
       .center {
@@ -572,27 +557,16 @@
         width: 30px;
         height: 30px;
         border-radius: 8px;
+        border: 1px solid var(--line);
         flex-shrink: 0;
         display: grid;
         place-items: center;
-        font-size: 12px;
-        font-weight: 700;
+        overflow: hidden;
       }
-      .app-pr {
-        background: #1b1533;
-        color: #b6a2ff;
-      }
-      .app-ae {
-        background: #211741;
-        color: #c9b6ff;
-      }
-      .app-dv {
-        background: #2a1d15;
-        color: #e6b48c;
-      }
-      .app-ps {
-        background: #0a2036;
-        color: #8ec3ff;
+      .app svg {
+        width: 100%;
+        height: 100%;
+        display: block;
       }
       .checks li {
         position: relative;
@@ -658,7 +632,6 @@
         margin-top: 12px;
         color: var(--muted);
         font-size: 15px;
-        max-width: 46ch;
       }
       .price-list {
         margin-top: clamp(26px, 4vw, 38px);
@@ -719,6 +692,122 @@
       .price-amt .sub {
         font-size: 12px;
         color: var(--faint);
+      }
+      .price-more {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 10px;
+        padding: 7px 14px;
+        border-radius: 999px;
+        border: 1px solid var(--line-2);
+        background: transparent;
+        color: var(--text);
+        font-family: inherit;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition:
+          border-color 0.15s ease,
+          transform 0.15s ease;
+      }
+      .price-more:hover {
+        border-color: #4b4e56;
+        transform: translateY(-1px);
+      }
+      .price-more .chev {
+        display: inline-flex;
+        transition: transform 0.2s ease;
+      }
+      .price-more[aria-expanded="true"] .chev {
+        transform: rotate(180deg);
+      }
+      /* accordion: 0fr → 1fr animates height without knowing the content
+         size in advance (the text itself is added later) */
+      .price-details {
+        grid-column: 1 / -1;
+        display: grid;
+        grid-template-rows: 0fr;
+        transition: grid-template-rows 0.3s ease;
+      }
+      .price-details[data-open] {
+        grid-template-rows: 1fr;
+      }
+      .price-details-body {
+        overflow: hidden;
+      }
+      .price-details-content {
+        margin-top: clamp(16px, 2.2vw, 24px);
+        padding-top: clamp(16px, 2.2vw, 24px);
+        border-top: 1px solid var(--line);
+        display: grid;
+        gap: 18px;
+      }
+      .price-options {
+        display: grid;
+        gap: 8px;
+      }
+      .price-options li {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 4px 16px;
+        font-size: 14px;
+      }
+      .price-options .opt-label {
+        color: var(--muted);
+      }
+      .price-options .opt-price {
+        font-weight: 600;
+        white-space: nowrap;
+        font-variant-numeric: tabular-nums;
+      }
+      .price-options .opt-note {
+        font-weight: 400;
+        color: var(--faint);
+      }
+      .price-includes {
+        font-size: 13px;
+        color: var(--faint);
+        line-height: 1.6;
+        max-width: 60ch;
+      }
+      .price-rules h4 {
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--faint);
+        margin-bottom: 10px;
+      }
+      .price-rules ol {
+        display: grid;
+        gap: 8px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        counter-reset: rules;
+      }
+      .price-rules li {
+        counter-increment: rules;
+        position: relative;
+        padding-left: 22px;
+        font-size: 13px;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+      .price-rules li::before {
+        content: counter(rules) ".";
+        position: absolute;
+        left: 0;
+        top: 0;
+        color: var(--faint);
+        font-weight: 600;
+      }
+      .price-rules strong {
+        color: var(--text);
+        font-weight: 600;
       }
       /* larger pricing text on big screens */
       @media (min-width: 1200px) {
@@ -830,6 +919,13 @@
       .ci-wa {
         background: #12321f;
         color: #6cd08a;
+      }
+      .ci-vk {
+        background: #142743;
+        color: #5b93ff;
+      }
+      .ci-vk svg text {
+        font-family: Arial, "Helvetica Neue", sans-serif;
       }
       .ci-em {
         background: #20232a;
@@ -954,6 +1050,9 @@
           font-size: 16px;
           line-height: 1.4;
         }
+        .block-title {
+          text-align: center;
+        }
         .watch {
           justify-content: center;
         }
@@ -1019,7 +1118,8 @@
       @media (max-width: 560px) {
         .about-head {
           grid-template-columns: 1fr;
-          justify-items: start;
+          justify-items: center;
+          text-align: center;
         }
         .portrait {
           max-width: 180px;
@@ -1032,11 +1132,16 @@
         .price-amt {
           grid-column: 1/-1;
           flex-direction: row;
+          flex-wrap: wrap;
           align-items: baseline;
-          gap: 8px;
+          gap: 6px 8px;
           border-top: 1px solid var(--line);
           padding-top: 12px;
           margin-top: 2px;
+        }
+        .price-more {
+          margin-top: 0;
+          margin-left: auto;
         }
       }
 
@@ -1099,9 +1204,7 @@
                 Освободите время для&nbsp;творчества&nbsp;—
                 <span class="dim">монтаж я&nbsp;возьму на&nbsp;себя</span>
               </h1>
-              <p class="lead">
-                Монтаж рекламных, коммерческих и социальных видео.
-              </p>
+              <p class="lead">Монтаж рекламных, коммерческих и личных видео</p>
             </div>
             <div class="hero-media ph">
               <iframe
@@ -1121,32 +1224,65 @@
           </div>
 
           <div class="recommend" id="recommend">
-            <h2 class="block-title">Рекомендую посмотреть</h2>
+            <h2 class="block-title">Рекомендую посмотреть готовые работы</h2>
             <div class="video-grid">
-              <article class="vcard">
-                <div class="thumb thumb-car ph">
-                  <span class="play xs" aria-hidden="true"></span>
-                  <span class="badge corner">0:42</span>
+              <div class="vcard">
+                <div class="thumb ph">
+                  <iframe
+                    src="https://vk.com/video_ext.php?oid=-6960152&id=456239044&hd=2"
+                    title="Музыкальный клип"
+                    allow="
+                      autoplay;
+                      encrypted-media;
+                      fullscreen;
+                      picture-in-picture;
+                    "
+                    frameborder="0"
+                    allowfullscreen
+                    loading="lazy"
+                  ></iframe>
                 </div>
-                <h3>Рекламный ролик</h3>
+                <h3>Музыкальный клип</h3>
                 <p class="meta">Монтаж · Цвет · Звук · Графика</p>
-              </article>
-              <article class="vcard">
-                <div class="thumb thumb-city ph">
-                  <span class="play xs" aria-hidden="true"></span>
-                  <span class="badge corner">0:38</span>
+              </div>
+              <div class="vcard">
+                <div class="thumb ph">
+                  <iframe
+                    src="https://vk.com/video_ext.php?oid=-159804325&id=456239055&hd=2"
+                    title="Рум-тур"
+                    allow="
+                      autoplay;
+                      encrypted-media;
+                      fullscreen;
+                      picture-in-picture;
+                    "
+                    frameborder="0"
+                    allowfullscreen
+                    loading="lazy"
+                  ></iframe>
                 </div>
-                <h3>Reels</h3>
+                <h3>Рум-тур</h3>
                 <p class="meta">Динамика · Текст · Музыка</p>
-              </article>
-              <article class="vcard">
-                <div class="thumb thumb-watch ph">
-                  <span class="play xs" aria-hidden="true"></span>
-                  <span class="badge corner">0:50</span>
+              </div>
+              <div class="vcard">
+                <div class="thumb ph">
+                  <iframe
+                    src="https://vk.com/video_ext.php?oid=-211211426&id=456240087&hd=2"
+                    title="Коммерческое видео (обзор)"
+                    allow="
+                      autoplay;
+                      encrypted-media;
+                      fullscreen;
+                      picture-in-picture;
+                    "
+                    frameborder="0"
+                    allowfullscreen
+                    loading="lazy"
+                  ></iframe>
                 </div>
-                <h3>Коммерческое видео</h3>
+                <h3>Коммерческое видео (обзор)</h3>
                 <p class="meta">Монтаж · Цвет · Звук · Графика</p>
-              </article>
+              </div>
             </div>
             <div class="center">
               <a class="btn btn-ghost" href="#kontakty"
@@ -1182,10 +1318,79 @@
             <div>
               <h3 class="col-title">Работаю с</h3>
               <ul class="tools">
-                <li><span class="app app-pr">Pr</span> Adobe Premiere Pro</li>
-                <li><span class="app app-ae">Ae</span> After Effects</li>
-                <li><span class="app app-dv">Dv</span> DaVinci Resolve</li>
-                <li><span class="app app-ps">Ps</span> Photoshop</li>
+                <li>
+                  <span class="app" aria-hidden="true">
+                    <svg viewBox="0 0 240 240">
+                      <path
+                        fill="#00005B"
+                        d="M196.959 0H43.0414C19.2703 0 0 19.2703 0 43.0414V196.959C0 220.73 19.2703 240 43.0414 240H196.959C220.73 240 240 220.73 240 196.959V43.0414C240 19.2703 220.73 0 196.959 0Z"
+                      />
+                      <path
+                        fill="#9999FF"
+                        d="M92.5516 63.7059C123.925 63.7059 141.594 78.4019 141.594 103.005C141.594 131.737 117.65 143.296 95.1933 143.296H80.002V174.339H49.2894V63.7059H92.5516ZM80.002 89.9604V117.041H93.5427C102.955 117.041 109.559 113.243 109.559 103.666C109.559 94.9144 103.945 89.9604 94.2027 89.9604H80.002Z"
+                      />
+                      <path
+                        fill="#9999FF"
+                        d="M184.411 86.6581C191.181 86.6581 196.63 87.4837 199.107 88.3093V110.766C197.125 110.271 193.327 109.94 190.19 109.94C184.081 109.94 180.613 110.436 177.475 111.592V174.339H148.579V93.9235C158.981 89.3001 169.385 86.6581 184.411 86.6581Z"
+                      />
+                    </svg>
+                  </span>
+                  Adobe Premiere Pro
+                </li>
+                <li>
+                  <span class="app" aria-hidden="true">
+                    <svg viewBox="0 0 42 42">
+                      <path
+                        fill="#00005B"
+                        d="M34.4678 0H7.53225C3.3723 0 0 3.3723 0 7.53225V34.4678C0 38.6277 3.3723 42 7.53225 42H34.4678C38.6277 42 42 38.6277 42 34.4678V7.53225C42 3.3723 38.6277 0 34.4678 0Z"
+                      />
+                      <path
+                        fill="#9999FF"
+                        d="M10.7343 11.1486H16.9182L23.8534 30.5093H18.1896L17.236 27.5618H9.98297L9.02936 30.5093H3.5968L10.7343 11.1486ZM15.7334 22.9673L13.624 16.4655L11.5145 22.9673H15.7334Z"
+                      />
+                      <path
+                        fill="#9999FF"
+                        d="M38.4033 22.5338C38.4033 23.2274 38.3455 23.9787 38.2588 24.5566H28.8096C29.3875 26.0015 30.7746 26.6949 32.9419 26.6949C34.5022 26.6949 35.8604 26.406 37.2185 25.7703L37.2764 29.7869C35.8026 30.5382 34.2134 30.7983 32.1616 30.7983C27.1047 30.7983 23.7239 27.9953 23.7239 22.9095C23.7239 18.2571 26.9603 15.1652 31.2369 15.1652C35.6293 15.1652 38.4033 17.9971 38.4033 22.5338ZM28.6363 21.2624H33.6931C33.5776 19.9042 32.7396 18.9507 31.2658 18.9507C29.8499 18.9507 28.9541 19.702 28.6363 21.2624Z"
+                      />
+                    </svg>
+                  </span>
+                  After Effects
+                </li>
+                <li>
+                  <span class="app" aria-hidden="true">
+                    <svg viewBox="0 0 512 509.659">
+                      <path
+                        fill="#000"
+                        d="M116.971 2.475h278.058c62.971 0 114.494 51.522 114.494 114.494v275.722c0 62.971-51.523 114.493-114.494 114.493H116.971c-62.972 0-114.494-51.522-114.494-114.493V116.969c0-62.972 51.522-114.494 114.494-114.494z"
+                      />
+                      <path
+                        fill="#fff"
+                        fill-rule="nonzero"
+                        d="M109.095 181.505c2.223-19.532 18.316-34.578 37.955-35.483l167.194-.001a40.612 40.612 0 0130.095 17.427 42.152 42.152 0 016.39 14.915l49.135-24.364a2.185 2.185 0 013.141 1.674v27.628l.001.096a4.571 4.571 0 01-2.837 4.229 177620.936 177620.936 0 00-135.63 67.336l135.324 66.948a4.695 4.695 0 013.142 4.08v27.685a2.266 2.266 0 01-3.613 1.821c-16.12-8.162-32.464-15.854-48.462-24.18a63.503 63.503 0 01-4.282 11.225 40.813 40.813 0 01-26.098 20.135 44.994 44.994 0 01-11.221.919l-155.833.003c-3.51 0-7.04 0-10.53-.266-18.089-2.705-32.049-17.363-33.869-35.565v-26.77a5.935 5.935 0 014.08-4.879c27.791-13.732 55.521-27.587 83.353-41.258a32412.61 32412.61 0 00-84.17-41.748 5.41 5.41 0 01-3.223-4.918c-.042-8.876-.185-17.792-.042-26.689zm30.975.184c-1.674 3.367-.898 7.263-1.041 10.896 30.608 15.12 60.99 30.321 91.536 45.339 30.185-14.963 60.384-29.927 90.596-44.89 0-2.714.123-5.428 0-8.162a10.203 10.203 0 00-10.096-8.734h-.106l-161.565.001a10.082 10.082 0 00-9.345 5.55h.021zm-1.041 135.406c.142 3.673-.654 7.631 1.122 11.039a10.204 10.204 0 009.284 5.405l161.667.002.081-.001c3.618 0 6.961-1.94 8.754-5.081 2.04-3.57 1.102-7.855 1.305-11.773-30.26-14.936-60.48-30.118-90.801-44.89a43915.126 43915.126 0 00-91.432 45.299h.02z"
+                      />
+                    </svg>
+                  </span>
+                  CapCut
+                </li>
+                <li>
+                  <span class="app" aria-hidden="true">
+                    <svg viewBox="0 0 240 234">
+                      <path
+                        fill="#001E36"
+                        d="M42.5,0h155C221,0,240,19,240,42.5v149c0,23.5-19,42.5-42.5,42.5h-155C19,234,0,215,0,191.5v-149C0,19,19,0,42.5,0z"
+                      />
+                      <path
+                        fill="#31A8FF"
+                        d="M54,164.1V61.2c0-0.7,0.3-1.1,1-1.1c1.7,0,3.3,0,5.6-0.1c2.4-0.1,4.9-0.1,7.6-0.2c2.7-0.1,5.6-0.1,8.7-0.2 c3.1-0.1,6.1-0.1,9.1-0.1c8.2,0,15,1,20.6,3.1c5,1.7,9.6,4.5,13.4,8.2c3.2,3.2,5.7,7.1,7.3,11.4c1.5,4.2,2.3,8.5,2.3,13 c0,8.6-2,15.7-6,21.3c-4,5.6-9.6,9.8-16.1,12.2c-6.8,2.5-14.3,3.4-22.5,3.4c-2.4,0-4,0-5-0.1c-1-0.1-2.4-0.1-4.3-0.1v32.1 c0.1,0.7-0.4,1.3-1.1,1.4c-0.1,0-0.2,0-0.4,0H55.2C54.4,165.4,54,165,54,164.1z M75.8,79.4V113c1.4,0.1,2.7,0.2,3.9,0.2H85 c3.9,0,7.8-0.6,11.5-1.8c3.2-0.9,6-2.8,8.2-5.3c2.1-2.5,3.1-5.9,3.1-10.3c0.1-3.1-0.7-6.2-2.3-8.9c-1.7-2.6-4.1-4.6-7-5.7 c-3.7-1.5-7.7-2.1-11.8-2c-2.6,0-4.9,0-6.8,0.1C77.9,79.2,76.5,79.3,75.8,79.4L75.8,79.4z"
+                      />
+                      <path
+                        fill="#31A8FF"
+                        d="M192,106.9c-3-1.6-6.2-2.7-9.6-3.4c-3.7-0.8-7.4-1.3-11.2-1.3c-2-0.1-4.1,0.2-6,0.7c-1.3,0.3-2.4,1-3.1,2 c-0.5,0.8-0.8,1.8-0.8,2.7c0,0.9,0.4,1.8,1,2.6c0.9,1.1,2.1,2,3.4,2.7c2.3,1.2,4.7,2.3,7.1,3.3c5.4,1.8,10.6,4.3,15.4,7.3 c3.3,2.1,6,4.9,7.9,8.3c1.6,3.2,2.4,6.7,2.3,10.3c0.1,4.7-1.3,9.4-3.9,13.3c-2.8,4-6.7,7.1-11.2,8.9c-4.9,2.1-10.9,3.2-18.1,3.2 c-4.6,0-9.1-0.4-13.6-1.3c-3.5-0.6-7-1.7-10.2-3.2c-0.7-0.4-1.2-1.1-1.1-1.9v-17.4c0-0.3,0.1-0.7,0.4-0.9 c0.3-0.2,0.6-0.1,0.9,0.1c3.9,2.3,8,3.9,12.4,4.9c3.8,1,7.8,1.5,11.8,1.5c3.8,0,6.5-0.5,8.3-1.4c1.6-0.7,2.7-2.4,2.7-4.2 c0-1.4-0.8-2.7-2.4-4c-1.6-1.3-4.9-2.8-9.8-4.7c-5.1-1.8-9.8-4.2-14.2-7.2c-3.1-2.2-5.7-5.1-7.6-8.5c-1.6-3.2-2.4-6.7-2.3-10.2 c0-4.3,1.2-8.4,3.4-12.1c2.5-4,6.2-7.2,10.5-9.2c4.7-2.4,10.6-3.5,17.7-3.5c4.1,0,8.3,0.3,12.4,0.9c3,0.4,5.9,1.2,8.6,2.3 c0.4,0.1,0.8,0.5,1,0.9c0.1,0.4,0.2,0.8,0.2,1.2v16.3c0,0.4-0.2,0.8-0.5,1C192.9,107.1,192.4,107.1,192,106.9z"
+                      />
+                    </svg>
+                  </span>
+                  Photoshop
+                </li>
               </ul>
             </div>
             <div>
@@ -1203,7 +1408,7 @@
           <div class="exp">
             <h3 class="col-title">Опыт и проекты</h3>
             <p>
-              Более 3 лет в монтаже. Работал с брендами, малым бизнесом и
+              Более 8 лет в монтаже. Работал с брендами, малым бизнесом и
               частными клиентами.
             </p>
           </div>
@@ -1215,54 +1420,366 @@
         <div class="panel">
           <h2>Стоимость монтажа</h2>
           <p class="lead-sm">
-            Точная стоимость рассчитывается после оценки исходников и задачи.
+            Точная стоимость рассчитывается после оценки исходников и задачи
           </p>
           <div class="price-list">
             <div class="price-row">
               <div class="thumb thumb-reels ph"></div>
               <div class="price-info">
                 <h3>Reels / Shorts</h3>
-                <p>Монтаж коротких вертикальных роликов для соцсетей.</p>
+                <p>Монтаж коротких вертикальных роликов для соцсетей</p>
               </div>
               <div class="price-amt">
-                <span class="amt">от 1 500 ₽</span
+                <span class="amt">от 3 000 ₽</span
                 ><span class="sub">за ролик</span>
+                <button
+                  class="price-more"
+                  type="button"
+                  aria-expanded="false"
+                  aria-controls="price-details-reels"
+                >
+                  <span class="price-more-label">Подробнее</span>
+                  <span class="chev" aria-hidden="true">
+                    <svg
+                      viewBox="0 0 12 8"
+                      width="10"
+                      height="7"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M1 1.5L6 6.5L11 1.5" />
+                    </svg>
+                  </span>
+                </button>
+              </div>
+              <div class="price-details" id="price-details-reels">
+                <div class="price-details-body">
+                  <div class="price-details-content">
+                    <ul class="price-options">
+                      <li>
+                        <span class="opt-label">Видео до 1 минуты</span>
+                        <span class="opt-price">3 000 ₽</span>
+                      </li>
+                      <li>
+                        <span class="opt-label">Видео до 3 минут</span>
+                        <span class="opt-price">6 000 ₽</span>
+                      </li>
+                    </ul>
+                    <p class="price-includes">
+                      Базовая склейка, чистка звука, цветокоррекция, переходы,
+                      наложение музыки, наложение субтитров, всплывающие
+                      скриншоты/иллюстрации.
+                    </p>
+                    <div class="price-rules">
+                      <h4>Важные правила монтажа</h4>
+                      <ol>
+                        <li>
+                          <strong>Исходники.</strong> Монтаж выполняется из
+                          материалов заказчика. За исходники плохого качества не
+                          гарантируется выполнение работ высокого уровня.
+                        </li>
+                        <li>
+                          <strong>Сроки.</strong> Стандартный срок — от 3 до 7
+                          дней. Срочный монтаж (за 24–48 часов) — +50% к
+                          стоимости.
+                        </li>
+                        <li>
+                          <strong>Правки.</strong> В стоимость включены 2 круга
+                          бесплатных правок. Все последующие — 1000 ₽/круг (или
+                          почасовая оплата).
+                        </li>
+                        <li>
+                          <strong>Условия оплаты.</strong> Монтаж выполняется по
+                          50% предоплате перед началом работ и 50% после
+                          выполнения работ и согласования ролика.
+                        </li>
+                        <li>
+                          <strong>Согласование ролика.</strong> После выполнения
+                          работ заказчик знакомится с готовым видео в низком
+                          качестве и с водяными знаками — для соблюдения условий
+                          оплаты. После согласования и утверждения готовности
+                          ролика производится оплата, и заказчик получает
+                          готовый ролик высокого качества без водяных знаков.
+                        </li>
+                      </ol>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
             <div class="price-row">
               <div class="thumb thumb-yt ph"></div>
               <div class="price-info">
-                <h3>YouTube</h3>
-                <p>Монтаж роликов для YouTube и других платформ.</p>
+                <h3>Видео для блога</h3>
+                <p>Монтаж роликов для YouTube и других платформ</p>
               </div>
               <div class="price-amt">
-                <span class="amt">от 3 000 ₽</span
+                <span class="amt">от 8 000 ₽</span
                 ><span class="sub">за ролик</span>
+                <button
+                  class="price-more"
+                  type="button"
+                  aria-expanded="false"
+                  aria-controls="price-details-yt"
+                >
+                  <span class="price-more-label">Подробнее</span>
+                  <span class="chev" aria-hidden="true">
+                    <svg
+                      viewBox="0 0 12 8"
+                      width="10"
+                      height="7"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M1 1.5L6 6.5L11 1.5" />
+                    </svg>
+                  </span>
+                </button>
+              </div>
+              <div class="price-details" id="price-details-yt">
+                <div class="price-details-body">
+                  <div class="price-details-content">
+                    <ul class="price-options">
+                      <li>
+                        <span class="opt-label">Видео до 10 минут</span>
+                        <span class="opt-price">8 000 ₽</span>
+                      </li>
+                      <li>
+                        <span class="opt-label">Видео до 20 минут</span>
+                        <span class="opt-price">16 000 ₽</span>
+                      </li>
+                      <li>
+                        <span class="opt-label">Видео до 30 минут</span>
+                        <span class="opt-price">20 000 ₽</span>
+                      </li>
+                    </ul>
+                    <p class="price-includes">
+                      Базовая склейка, чистка звука, цветокоррекция, переходы,
+                      наложение музыки, наложение субтитров, всплывающие
+                      скриншоты/иллюстрации.
+                    </p>
+                    <div class="price-rules">
+                      <h4>Важные правила монтажа</h4>
+                      <ol>
+                        <li>
+                          <strong>Исходники.</strong> Монтаж выполняется из
+                          материалов заказчика. За исходники плохого качества не
+                          гарантируется выполнение работ высокого уровня.
+                        </li>
+                        <li>
+                          <strong>Сроки.</strong> Стандартный срок — от 3 до 7
+                          дней. Срочный монтаж (за 24–48 часов) — +50% к
+                          стоимости.
+                        </li>
+                        <li>
+                          <strong>Правки.</strong> В стоимость включены 2 круга
+                          бесплатных правок. Все последующие — 1000 ₽/круг (или
+                          почасовая оплата).
+                        </li>
+                        <li>
+                          <strong>Условия оплаты.</strong> Монтаж выполняется по
+                          50% предоплате перед началом работ и 50% после
+                          выполнения работ и согласования ролика.
+                        </li>
+                        <li>
+                          <strong>Согласование ролика.</strong> После выполнения
+                          работ заказчик знакомится с готовым видео в низком
+                          качестве и с водяными знаками — для соблюдения условий
+                          оплаты. После согласования и утверждения готовности
+                          ролика производится оплата, и заказчик получает
+                          готовый ролик высокого качества без водяных знаков.
+                        </li>
+                      </ol>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
             <div class="price-row">
               <div class="thumb thumb-ad ph"></div>
               <div class="price-info">
-                <h3>Рекламный ролик</h3>
-                <p>Монтаж коммерческих и рекламных видео.</p>
+                <h3>Коммерческое видео и реклама</h3>
+                <p>
+                  Промо-видео для сайтов, презентаций бизнеса, обучающие видео
+                </p>
               </div>
               <div class="price-amt">
-                <span class="amt">от 5 000 ₽</span
+                <span class="amt">от 15 000 ₽</span
                 ><span class="sub">за ролик</span>
+                <button
+                  class="price-more"
+                  type="button"
+                  aria-expanded="false"
+                  aria-controls="price-details-ad"
+                >
+                  <span class="price-more-label">Подробнее</span>
+                  <span class="chev" aria-hidden="true">
+                    <svg
+                      viewBox="0 0 12 8"
+                      width="10"
+                      height="7"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M1 1.5L6 6.5L11 1.5" />
+                    </svg>
+                  </span>
+                </button>
+              </div>
+              <div class="price-details" id="price-details-ad">
+                <div class="price-details-body">
+                  <div class="price-details-content">
+                    <ul class="price-options">
+                      <li>
+                        <span class="opt-label">Видео до 5 минут</span>
+                        <span class="opt-price">15 000 ₽</span>
+                      </li>
+                      <li>
+                        <span class="opt-label">Видео до 10 минут</span>
+                        <span class="opt-price">25 000 ₽</span>
+                      </li>
+                    </ul>
+                    <p class="price-includes">
+                      Имиджевая склейка, анимированное интро и аутро с
+                      логотипом, стильные титры для спикеров, лицензионная
+                      музыка, бесшовные переходы.
+                    </p>
+                    <div class="price-rules">
+                      <h4>Важные правила монтажа</h4>
+                      <ol>
+                        <li>
+                          <strong>Исходники.</strong> Монтаж выполняется из
+                          материалов заказчика. За исходники плохого качества не
+                          гарантируется выполнение работ высокого уровня.
+                        </li>
+                        <li>
+                          <strong>Сроки.</strong> Стандартный срок — от 3 до 7
+                          дней. Срочный монтаж (за 24–48 часов) — +50% к
+                          стоимости.
+                        </li>
+                        <li>
+                          <strong>Правки.</strong> В стоимость включены 2 круга
+                          бесплатных правок. Все последующие — 1000 ₽/круг (или
+                          почасовая оплата).
+                        </li>
+                        <li>
+                          <strong>Условия оплаты.</strong> Монтаж выполняется по
+                          50% предоплате перед началом работ и 50% после
+                          выполнения работ и согласования ролика.
+                        </li>
+                        <li>
+                          <strong>Согласование ролика.</strong> После выполнения
+                          работ заказчик знакомится с готовым видео в низком
+                          качестве и с водяными знаками — для соблюдения условий
+                          оплаты. После согласования и утверждения готовности
+                          ролика производится оплата, и заказчик получает
+                          готовый ролик высокого качества без водяных знаков.
+                        </li>
+                      </ol>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
             <div class="price-row">
               <div class="thumb thumb-complex ph"></div>
               <div class="price-info">
-                <h3>Сложный монтаж</h3>
+                <h3>Пакетное сопровождение</h3>
                 <p>
-                  Графика, большое количество исходников, сложный саунд-дизайн
-                  и&nbsp;т.д.
+                  Для экспертных блогов, интервью, обзоров с регулярным графиком
+                  публикаций
                 </p>
               </div>
               <div class="price-amt">
-                <span class="amt">Индивидуально</span
-                ><span class="sub">по задаче</span>
+                <span class="amt">от 28 000 ₽</span>
+                <button
+                  class="price-more"
+                  type="button"
+                  aria-expanded="false"
+                  aria-controls="price-details-complex"
+                >
+                  <span class="price-more-label">Подробнее</span>
+                  <span class="chev" aria-hidden="true">
+                    <svg
+                      viewBox="0 0 12 8"
+                      width="10"
+                      height="7"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M1 1.5L6 6.5L11 1.5" />
+                    </svg>
+                  </span>
+                </button>
+              </div>
+              <div class="price-details" id="price-details-complex">
+                <div class="price-details-body">
+                  <div class="price-details-content">
+                    <ul class="price-options">
+                      <li>
+                        <span class="opt-label">4 видео до 10 минут</span>
+                        <span class="opt-price"
+                          >28 000 ₽
+                          <span class="opt-note">· экономия 4 000 ₽</span></span
+                        >
+                      </li>
+                      <li>
+                        <span class="opt-label">4 видео до 20 минут</span>
+                        <span class="opt-price"
+                          >58 000 ₽
+                          <span class="opt-note">· экономия 6 000 ₽</span></span
+                        >
+                      </li>
+                      <li>
+                        <span class="opt-label">4 видео до 30 минут</span>
+                        <span class="opt-price"
+                          >74 000 ₽
+                          <span class="opt-note">· экономия 6 000 ₽</span></span
+                        >
+                      </li>
+                    </ul>
+                    <p class="price-includes">
+                      Базовая склейка, чистка звука, цветокоррекция, переходы,
+                      наложение музыки, наложение субтитров, всплывающие
+                      скриншоты/иллюстрации.
+                    </p>
+                    <div class="price-rules">
+                      <h4>Важные правила пакетов</h4>
+                      <ol>
+                        <li>
+                          <strong>Сгорание услуг.</strong> Ролики не переносятся
+                          на следующий месяц. Если заказчик не прислал исходники
+                          вовремя, услуга за эту неделю считается выполненной.
+                        </li>
+                        <li>
+                          <strong>Условия оплаты.</strong> Пакеты работают по
+                          100% предоплате перед началом месяца.
+                        </li>
+                        <li>
+                          <strong>График сдачи.</strong> Исходники должны быть
+                          переданы монтажёру минимум за 4–5 дней до планируемой
+                          даты публикации.
+                        </li>
+                        <li>
+                          <strong>Правки.</strong> В стоимость включены 2 круга
+                          бесплатных правок. Все последующие — 1000 ₽/круг.
+                        </li>
+                      </ol>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -1275,7 +1792,7 @@
           <div class="contact-copy">
             <h2>Связаться со мной</h2>
             <p>
-              Если хотите обсудить проект, напишите мне в Telegram. Расскажите,
+              Если хотите обсудить проект, напишите мне в соцсетях. Расскажите,
               что нужно смонтировать, и я отвечу по стоимости и срокам.
             </p>
             <div class="contact-list">
@@ -1309,6 +1826,29 @@
                   </svg>
                 </span>
                 <span class="cl">WhatsApp</span>
+                <span class="ca" aria-hidden="true">→</span>
+              </a>
+              <a
+                class="contact-row"
+                href="https://vk.ru/artemlesovoj"
+                target="_blank"
+                rel="noopener"
+              >
+                <span class="ci ci-vk" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none">
+                    <text
+                      x="12"
+                      y="16"
+                      text-anchor="middle"
+                      font-weight="800"
+                      font-size="11"
+                      fill="currentColor"
+                    >
+                      VK
+                    </text>
+                  </svg>
+                </span>
+                <span class="cl">ВКонтакте</span>
                 <span class="ca" aria-hidden="true">→</span>
               </a>
               <a
@@ -1405,6 +1945,22 @@
             window.scrollTo({ top: 0, behavior: "smooth" });
           });
         }
+
+        // pricing cards: "Подробнее" toggles an inline details panel
+        document.querySelectorAll(".price-more").forEach(function (btn) {
+          var details = document.getElementById(
+            btn.getAttribute("aria-controls"),
+          );
+          var label = btn.querySelector(".price-more-label");
+          if (!details) return;
+
+          btn.addEventListener("click", function () {
+            var willOpen = btn.getAttribute("aria-expanded") !== "true";
+            btn.setAttribute("aria-expanded", String(willOpen));
+            details.toggleAttribute("data-open", willOpen);
+            if (label) label.textContent = willOpen ? "Свернуть" : "Подробнее";
+          });
+        });
       })();
     </script>
   </body>
