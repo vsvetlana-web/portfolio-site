@@ -483,6 +483,34 @@
         height: 100%;
         border: 0;
       }
+      .thumb-clip {
+        background-image: url("clip.jpg");
+      }
+      .thumb-roomtour {
+        background-image: url("roomtour.jpg");
+      }
+      .thumb-commvid {
+        background-image: url("commvid.jpg");
+      }
+      /* preview thumb → play button; swapped for a live iframe on click */
+      .vplay {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        display: grid;
+        place-items: center;
+        border: 0;
+        padding: 0;
+        background: rgba(10, 11, 13, 0.1);
+        cursor: pointer;
+      }
+      .vplay .play {
+        transition: transform 0.2s ease;
+      }
+      .vplay:hover .play {
+        transform: scale(1.06);
+      }
       .vcard h3 {
         font-size: 15px;
         font-weight: 600;
@@ -1227,58 +1255,43 @@
             <h2 class="block-title">Рекомендую посмотреть готовые работы</h2>
             <div class="video-grid">
               <div class="vcard">
-                <div class="thumb ph">
-                  <iframe
-                    src="https://vk.com/video_ext.php?oid=-6960152&id=456239044&hd=2"
-                    title="Музыкальный клип"
-                    allow="
-                      autoplay;
-                      encrypted-media;
-                      fullscreen;
-                      picture-in-picture;
-                    "
-                    frameborder="0"
-                    allowfullscreen
-                    loading="lazy"
-                  ></iframe>
+                <div class="thumb thumb-clip ph">
+                  <button
+                    class="vplay"
+                    type="button"
+                    data-embed="https://vk.com/video_ext.php?oid=-6960152&id=456239044&hd=2&autoplay=1"
+                    aria-label="Воспроизвести видео «Музыкальный клип»"
+                  >
+                    <span class="play" aria-hidden="true"></span>
+                  </button>
                 </div>
                 <h3>Музыкальный клип</h3>
                 <p class="meta">Монтаж · Цвет · Звук · Графика</p>
               </div>
               <div class="vcard">
-                <div class="thumb ph">
-                  <iframe
-                    src="https://vk.com/video_ext.php?oid=-159804325&id=456239055&hd=2"
-                    title="Рум-тур"
-                    allow="
-                      autoplay;
-                      encrypted-media;
-                      fullscreen;
-                      picture-in-picture;
-                    "
-                    frameborder="0"
-                    allowfullscreen
-                    loading="lazy"
-                  ></iframe>
+                <div class="thumb thumb-roomtour ph">
+                  <button
+                    class="vplay"
+                    type="button"
+                    data-embed="https://vk.com/video_ext.php?oid=-159804325&id=456239055&hd=2&autoplay=1"
+                    aria-label="Воспроизвести видео «Рум-тур»"
+                  >
+                    <span class="play" aria-hidden="true"></span>
+                  </button>
                 </div>
                 <h3>Рум-тур</h3>
                 <p class="meta">Динамика · Текст · Музыка</p>
               </div>
               <div class="vcard">
-                <div class="thumb ph">
-                  <iframe
-                    src="https://vk.com/video_ext.php?oid=-211211426&id=456240087&hd=2"
-                    title="Коммерческое видео (обзор)"
-                    allow="
-                      autoplay;
-                      encrypted-media;
-                      fullscreen;
-                      picture-in-picture;
-                    "
-                    frameborder="0"
-                    allowfullscreen
-                    loading="lazy"
-                  ></iframe>
+                <div class="thumb thumb-commvid ph">
+                  <button
+                    class="vplay"
+                    type="button"
+                    data-embed="https://vk.com/video_ext.php?oid=-211211426&id=456240087&hd=2&autoplay=1"
+                    aria-label="Воспроизвести видео «Коммерческое видео (обзор)»"
+                  >
+                    <span class="play" aria-hidden="true"></span>
+                  </button>
                 </div>
                 <h3>Коммерческое видео (обзор)</h3>
                 <p class="meta">Монтаж · Цвет · Звук · Графика</p>
@@ -1959,6 +1972,25 @@
             btn.setAttribute("aria-expanded", String(willOpen));
             details.toggleAttribute("data-open", willOpen);
             if (label) label.textContent = willOpen ? "Свернуть" : "Подробнее";
+          });
+        });
+
+        // recommended videos: swap the preview photo for a live embed
+        // only once the play button is pressed
+        document.querySelectorAll(".vplay").forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            var thumb = btn.parentElement;
+            var iframe = document.createElement("iframe");
+            iframe.src = btn.dataset.embed;
+            iframe.title = btn.getAttribute("aria-label");
+            iframe.setAttribute(
+              "allow",
+              "autoplay; encrypted-media; fullscreen; picture-in-picture",
+            );
+            iframe.allowFullscreen = true;
+            iframe.frameBorder = "0";
+            thumb.innerHTML = "";
+            thumb.appendChild(iframe);
           });
         });
       })();
