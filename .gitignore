@@ -1,0 +1,5 @@
+# raw video masters — too large for GitHub (100MB limit) and not needed
+# on the server; only the compressed *-web.mp4 versions get deployed
+main-video.mp4
+infinity.mp4
+.DS_Store
