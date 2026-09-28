@@ -487,6 +487,18 @@
       .showcase-media video::-webkit-media-controls-fullscreen-button {
         display: none !important;
       }
+      /* the poster already has its own play icon baked into the design —
+         this is just a full-cover invisible click target for it */
+      .native-play {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+        padding: 0;
+        background: transparent;
+        cursor: pointer;
+      }
       .showcase-copy h3 {
         font-size: 18px;
         font-weight: 700;
@@ -1296,7 +1308,7 @@
                 disablepictureinpicture
                 disableremoteplayback
                 preload="auto"
-                oncontextmenu="return false"
+                oncontextmenu="return false;"
               ></video>
             </div>
           </div>
@@ -1304,21 +1316,28 @@
           <div class="showcase">
             <div class="showcase-media ph">
               <video
+                id="main-video"
                 src="main-video-web.mp4"
-                poster="main-video-poster.jpg"
-                controls
+                poster="main-video-cover.jpg"
                 controlsList="nofullscreen"
                 disablepictureinpicture
                 preload="metadata"
                 playsinline
               ></video>
+              <button
+                class="native-play"
+                type="button"
+                aria-label="Воспроизвести видео"
+              ></button>
             </div>
             <div class="showcase-copy">
-              <h3>Заголовок появится здесь</h3>
-              <p>Текст появится позже — здесь будет короткий рассказ о ролике.</p>
+              <h3>Видеомонтаж под любую задачу</h3>
+              <p>
+                От YouTube и обзоров до корпоративных видео, рекламы и
+                музыкальных клипов
+              </p>
             </div>
           </div>
-
         </div>
       </section>
 
@@ -2057,6 +2076,18 @@
             thumb.appendChild(iframe);
           });
         });
+
+        // main showcase video: cover art with its own play icon baked in —
+        // clicking it starts playback and reveals normal controls
+        var mainVideo = document.getElementById("main-video");
+        var mainVideoPlay = document.querySelector(".native-play");
+        if (mainVideo && mainVideoPlay) {
+          mainVideoPlay.addEventListener("click", function () {
+            mainVideo.setAttribute("controls", "");
+            mainVideo.play();
+            mainVideoPlay.remove();
+          });
+        }
       })();
     </script>
   </body>
