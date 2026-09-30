@@ -487,8 +487,9 @@
       .showcase-media video::-webkit-media-controls-fullscreen-button {
         display: none !important;
       }
-      /* the poster already has its own play icon baked into the design —
-         this is just a full-cover invisible click target for it */
+      /* full-cover click target for the cover art, with its own play icon
+         on top — the icon baked into the artwork itself is too small/faint
+         to read as a button */
       .native-play {
         position: absolute;
         inset: 0;
@@ -498,6 +499,20 @@
         padding: 0;
         background: transparent;
         cursor: pointer;
+        display: grid;
+        place-items: center;
+      }
+      .native-play .play {
+        transition: transform 0.2s ease;
+      }
+      .native-play:hover .play {
+        transform: scale(1.06);
+      }
+      @media (min-width: 901px) {
+        .native-play .play {
+          width: 104px;
+          height: 104px;
+        }
       }
       .showcase-copy h3 {
         font-size: 18px;
@@ -1328,7 +1343,9 @@
                 class="native-play"
                 type="button"
                 aria-label="Воспроизвести видео"
-              ></button>
+              >
+                <span class="play" aria-hidden="true"></span>
+              </button>
             </div>
             <div class="showcase-copy">
               <h3>Видеомонтаж под любую задачу</h3>
